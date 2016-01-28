@@ -1,10 +1,10 @@
 {
   "applications": {
-    "8MinutesParse": {
-      "applicationId": "iKFTKaT7rnKR8tAER8IXIuxm3KVb4orjID90uTo5"
+    "8 Minutes": {
+      "applicationId": "dJDm7ykUrDyWwRxvRuwxPVwM4Wf9aMr3mugB2Sey"
     },
     "_default": {
-      "link": "8MinutesParse"
+      "link": "8 Minutes"
     }
   }
 }
