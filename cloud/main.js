@@ -21,6 +21,21 @@ Parse.Cloud.beforeSave("Referral", function (request, response) {
       response.error("Could not validate email for referral");
     }
   });
+
+  var query = new Parse.Query(Referral);
+  query.equalTo("phone", request.object.get("phone"));
+  query.first({
+    success: function (object) {
+      if (object) {
+        response.error("User with phone is already registered!");
+      } else {
+        response.success();
+      }
+    },
+    error: function (error) {
+      response.error("Could not validate phone for referral");
+    }
+  });
 });
 
 // Check if member is already registered.
@@ -38,6 +53,21 @@ Parse.Cloud.beforeSave("Member", function (request, response) {
     },
     error: function (error) {
       response.error("Could not validate email for member");
+    }
+  });
+
+  var query = new Parse.Query(Member);
+  query.equalTo("phone", request.object.get("phone"));
+  query.first({
+    success: function (object) {
+      if (object) {
+        response.error("User with phone is already registered!");
+      } else {
+        response.success();
+      }
+    },
+    error: function (error) {
+      response.error("Could not validate phone for member");
     }
   });
 });
