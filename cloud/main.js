@@ -7,12 +7,16 @@ Parse.Cloud.define("hello", function (request, response) {
 // Check if referral is already registered.
 var Referral = Parse.Object.extend("Referral");
 Parse.Cloud.beforeSave("Referral", function (request, response) {
-  var query = new Parse.Query(Referral);
-  query.equalTo("email", request.object.get("email"));
+  var query1 = new Parse.Query(Referral);
+  query1.equalTo("email", request.object.get("email"));
+  var query2 = new Parse.Query(Referral);
+  query2.equalTo("phone", request.object.get("phone"));
+  var query = new Parse.Query.or(query1, query2);
+
   query.first({
     success: function (object) {
-      if (object) {
-        response.error("User with email is already registered!");
+      if (object.id != request.object.id) {
+        response.error("User with email/phone is already registered!");
       } else {
         response.success();
       }
@@ -21,53 +25,26 @@ Parse.Cloud.beforeSave("Referral", function (request, response) {
       response.error("Could not validate email for referral");
     }
   });
-
-  var query = new Parse.Query(Referral);
-  query.equalTo("phone", request.object.get("phone"));
-  query.first({
-    success: function (object) {
-      if (object) {
-        response.error("User with phone is already registered!");
-      } else {
-        response.success();
-      }
-    },
-    error: function (error) {
-      response.error("Could not validate phone for referral");
-    }
-  });
 });
 
 // Check if member is already registered.
-var Member = Parse.Object.extend("Member");
-Parse.Cloud.beforeSave("Member", function (request, response) {
-  var query = new Parse.Query(Member);
-  query.equalTo("email", request.object.get("email"));
+Parse.Cloud.beforeSave(Parse.User, function (request, response) {
+  var query1 = new Parse.Query(Parse.User);
+  query1.equalTo("email", request.object.get("email"));
+  var query2 = new Parse.Query(Parse.User);
+  query2.equalTo("phone", request.object.get("phone"));
+  var query = Parse.Query.or(query1, query2);
+
   query.first({
     success: function (object) {
-      if (object) {
-        response.error("User with email is already registered!");
+      if (object.id != request.object.id) {
+        response.error("User with email/phone is already registered!");
       } else {
         response.success();
       }
     },
     error: function (error) {
       response.error("Could not validate email for member");
-    }
-  });
-
-  var query = new Parse.Query(Member);
-  query.equalTo("phone", request.object.get("phone"));
-  query.first({
-    success: function (object) {
-      if (object) {
-        response.error("User with phone is already registered!");
-      } else {
-        response.success();
-      }
-    },
-    error: function (error) {
-      response.error("Could not validate phone for member");
     }
   });
 });
